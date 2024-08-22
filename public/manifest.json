@@ -6,7 +6,7 @@
   "icons": {
     "128": "icons/128.png"
   },
-  "permissions": ["storage"],
+  "permissions": ["storage","scripting","activeTab"],
   "content_scripts": [
     {
       "js": ["content.js"],
@@ -24,6 +24,12 @@
       "run_at": "document_end"
     }
   ],
+
+  "action": {},
+  "background": {
+    "service_worker": "background.js"
+  },
+
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true

@@ -8,6 +8,8 @@ const config: Configuration = {
     content: path.join(srcDir, 'content.ts'),
     options: path.join(srcDir, 'options.ts'),
     awsapps: path.join(srcDir, 'awsapps.ts'),
+    background: path.join(srcDir, 'background.js'),
+    action: path.join(srcDir, 'action.ts'),
   },
   output: {
     path: path.join(__dirname, 'dist'),
