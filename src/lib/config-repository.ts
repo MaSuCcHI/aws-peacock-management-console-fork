@@ -9,10 +9,12 @@ export type Config = {
   style: {
     navigationBackgroundColor?: string
     accountMenuButtonBackgroundColor?: string
-  }
+  } 
 }
-export type ConfigList = Config[]
-
+export type ConfigList = {
+  identityCenter?: string
+  configs: Config[],
+}
 export class ConfigRepository extends Repository {
   constructor(props: RepositoryProps) {
     super('config', props)

@@ -99,7 +99,7 @@ const findConfig = (
   accountId: string,
   region: string
 ): Config | undefined =>
-  configList.find((config: Config) => {
+  configList.configs.find((config: Config) => {
     if (Array.isArray(config.env)) {
       return config.env.some((e) => isEnvMatch(e, accountId, region))
     } else {

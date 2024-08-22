@@ -32,10 +32,6 @@ const waitForElement = async (selector: string, timeout: number): Promise<HTMLEl
   throw new Error(`Element ${selector} not found after ${timeout}ms`);
 }
 
-const getOriginalAccountMenuButtonBackground = () => {
-  return selectElement('span[data-testid="account-menu-button__background"]')
-}
-
 const getAccountIdFromDescendantByDataTestidEqualsAwscCopyAccountId = (accountDetailMenu: HTMLElement): string | null => {
   const copyAccountIdButton = accountDetailMenu.querySelector<HTMLElement>('button[data-testid="awsc-copy-accountid"]')
   return (copyAccountIdButton?.previousElementSibling as HTMLSpanElement)?.innerText?.replace(/-/g, '')
@@ -66,13 +62,11 @@ const getAccountId = async (): Promise<string | null | undefined> => {
   }
 }
 
-const getRegion = () => {
-  return document.getElementById('awsc-mezz-region')?.getAttribute('content')
-}
-
 const loadConfigList = async (): Promise<ConfigList | null> => {
   const configList = await configRepository.get()
   if (configList) {
+    // alert(`ConfigList:${parseConfigList(configList)}`)
+    console.log(`ConfigList1:${parseConfigList(configList).configs}`)
     return parseConfigList(configList)
   } else {
     return null
@@ -95,7 +89,7 @@ const findConfig = (
   accountId: string,
   region: string
 ): Config | undefined =>
-  configList.find((config: Config) => {
+  configList.configs.find((config: Config) => {
     if (Array.isArray(config.env)) {
       return config.env.some((e) => isEnvMatch(e, accountId, region))
     } else {
@@ -103,15 +97,23 @@ const findConfig = (
     }
   })
 
+const getConfigIdentityCenterId = (
+  configList: ConfigList
+): string | undefined => {
+  alert(`getConfigICI:${configList}`)
+  return configList.identityCenter!=null ? configList.identityCenter : undefined
+}
+
 const run = async () => {
-  const accounts = await accountsRepository.getAccounts()
-  const configList = await loadConfigList()
   const accountId = await getAccountId()
-  const region = getRegion()
-  if (configList && accountId && region) {
-    const config = findConfig(configList, accountId, region)
-  }
-  navigator.clipboard.writeText(accountId||'undefind')
+  const configList = await loadConfigList()
+  if (configList == null && configList!.identityCenter == null) {return}
+  const identityCenterId = getConfigIdentityCenterId(configList!)
+  if (identityCenterId == null) {return}
+  alert('test3')
+  const tabUrl = 'https://ap-northeast-1.console.aws.amazon.com/console/home?region=ap-northeast-1#'
+  const shortcutLink = `https://${identityCenterId}.awsapps.com/start/#/console?account_id=${accountId}&destination=${tabUrl}`
+  navigator.clipboard.writeText(shortcutLink||'undefind')
 }
 
 run()

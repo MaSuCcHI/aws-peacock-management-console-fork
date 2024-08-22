@@ -7,42 +7,45 @@ const repositoryProps: RepositoryProps = {
 }
 const configRepository = new ConfigRepository(repositoryProps)
 
-const sampleConfig = `[
-  /**
-   * JSON with comment format
-   *
-   * When multiple rules match, the first matching rule will be applied.
-   *
-   */
-  // prod
-  {
-    "env": {
-      "account": "111111111111"
-    },
-    "style": {
-      "navigationBackgroundColor": "#65c89b",
-      "accountMenuButtonBackgroundColor": "#945bc4"
-    }
-  },
-  // dev
-  {
-    // env can be array.
-    "env": [
-      {
-        "account": "222222222222",
-        "region": "us-east-1" // region is optional property
+const sampleConfig = `{
+  "identityCenter" = "my_subdomain",
+  "configs" = [
+    /**
+     * JSON with comment format
+     *
+     * When multiple rules match, the first matching rule will be applied.
+     *
+     */
+    // prod
+    {
+      "env": {
+        "account": "111111111111"
       },
-      {
-        "account": "333333333333"
+      "style": {
+        "navigationBackgroundColor": "#65c89b",
+        "accountMenuButtonBackgroundColor": "#945bc4"
       }
-    ],
-    "style": {
-      // navigationBackgroundColor and accountMenuButtonBackgroundColor are optional properties.
-      "navigationBackgroundColor": "#3399ff",
-      "accountMenuButtonBackgroundColor": "#bf0060"
+    },
+    // dev
+    {
+      // env can be array.
+      "env": [
+        {
+          "account": "222222222222",
+          "region": "us-east-1" // region is optional property
+        },
+        {
+          "account": "333333333333"
+        }
+      ],
+      "style": {
+        // navigationBackgroundColor and accountMenuButtonBackgroundColor are optional properties.
+        "navigationBackgroundColor": "#3399ff",
+        "accountMenuButtonBackgroundColor": "#bf0060"
+      }
     }
-  }
-]
+  ]
+}
 `
 
 window.onload = async () => {
