@@ -65,8 +65,6 @@ const getAccountId = async (): Promise<string | null | undefined> => {
 const loadConfigList = async (): Promise<ConfigList | null> => {
   const configList = await configRepository.get()
   if (configList) {
-    // alert(`ConfigList:${parseConfigList(configList)}`)
-    console.log(`ConfigList1:${parseConfigList(configList).configs}`)
     return parseConfigList(configList)
   } else {
     return null
@@ -100,20 +98,19 @@ const findConfig = (
 const getConfigIdentityCenterId = (
   configList: ConfigList
 ): string | undefined => {
-  alert(`getConfigICI:${configList}`)
   return configList.identityCenter!=null ? configList.identityCenter : undefined
 }
 
 const run = async () => {
   const accountId = await getAccountId()
   const configList = await loadConfigList()
-  if (configList == null && configList!.identityCenter == null) {return}
+  if (configList == null || configList!.identityCenter == null) {return}
   const identityCenterId = getConfigIdentityCenterId(configList!)
   if (identityCenterId == null) {return}
-  alert('test3')
-  const tabUrl = 'https://ap-northeast-1.console.aws.amazon.com/console/home?region=ap-northeast-1#'
-  const shortcutLink = `https://${identityCenterId}.awsapps.com/start/#/console?account_id=${accountId}&destination=${tabUrl}`
-  navigator.clipboard.writeText(shortcutLink||'undefind')
+  const tabUrl = window.location.href
+  const encodedUrl = encodeURIComponent(tabUrl)
+  const shortcutLink = `https://${identityCenterId}.awsapps.com/start/#/console?account_id=${accountId}&destination=${encodedUrl}`
+  navigator.clipboard.writeText(shortcutLink)
 }
 
 run()

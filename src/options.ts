@@ -8,8 +8,8 @@ const repositoryProps: RepositoryProps = {
 const configRepository = new ConfigRepository(repositoryProps)
 
 const sampleConfig = `{
-  "identityCenter" = "my_subdomain",
-  "configs" = [
+  "identityCenter" : "my_subdomain",
+  "configs" : [
     /**
      * JSON with comment format
      *
