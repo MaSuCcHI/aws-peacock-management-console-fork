@@ -1,3 +1,15 @@
+# AWS Peacock Management Consoleの機能を拡張した。  
+* AWS IAM Identity Centerを利用しているユーザがconfigにサブドメインを設定しておくことで開いているAWSリソースの[shortcut link](https://docs.aws.amazon.com/singlesignon/latest/userguide/createshortcutlink.html?icmpid=docs_sso_console)をピン留めしたicon<img src="./public/icons/128.png" height="20px"/>)をクリックすることで取得できます。
+* 参考：https://dev.classmethod.jp/articles/iam-identity-center-shortcut-links-aws-access-portal/
+
+
+## 背景
+AWSのリソースのURLは、対象のAWSアカウント情報を含んでいないため、ログインしているアカウントで共有されたURLを開こうとして、別のアカウントのリソースだということが多い。 AWS IAM Identity Center ショートカットリンク作成機能を使うことでアカウント（＋閲覧ロールなど）を指定したURLを発行できるため、社内ドキュメントなどでリソースURLを埋め込む時に利用すると便利である。ショートカットリンクは簡単なルールで生成されるが、わざわざアクセスポータル画面に遷移してショートカットリンクを生成するのが面倒なためワンクリックでショートカットリンクを発行できるようにAWS Peacock Management Consoleを拡張した。  
+
+（AWS Peacock Management Consoleを拡張したのはAWSをマルチアカウントで利用だろうとユースケースが近いため）
+
+
+以下、本家README（https://github.com/xhiroga/aws-peacock-management-console）
 # AWS Peacock Management Console ![Peacock](./public/icons/128.png)
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/bknjjajglapfhbdcfgmhgkgfomkkaidj.svg)](https://chrome.google.com/webstore/detail/aws-peacock-management-co/bknjjajglapfhbdcfgmhgkgfomkkaidj?utm_source=github)
