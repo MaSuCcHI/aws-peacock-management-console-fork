@@ -8,6 +8,34 @@ AWSのリソースのURLは、対象のAWSアカウント情報を含んでい�
 
 （AWS Peacock Management Consoleを拡張したのはAWSをマルチアカウントで利用だろうとユースケースが近いため）
 
+## config
+```
+{
+  // AWS access portal:
+  //   https://{{my_subdomain}}.awsapps.com/start/#/?tab=accounts
+  "identityCenter" : "my_subdomain",
+  
+  "configs" : [
+    /**
+     * JSON with comment format
+     *
+     * When multiple rules match, the first matching rule will be applied.
+     *
+     */
+    // prod
+    {
+      "env": {
+        "account": "111111111111"
+      },
+      "style": {
+        "navigationBackgroundColor": "#65c89b",
+        "accountMenuButtonBackgroundColor": "#945bc4"
+      }
+    }
+  ]
+}
+
+```
 
 以下、本家README（https://github.com/xhiroga/aws-peacock-management-console）
 # AWS Peacock Management Console ![Peacock](./public/icons/128.png)
