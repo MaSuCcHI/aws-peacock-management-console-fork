@@ -6,11 +6,13 @@ import {
 import {
   Config,
   ConfigList,
+  ConfigMap,
   ConfigRepository,
   Environment,
 } from './lib/config-repository'
 import { RepositoryProps } from './lib/repository'
 import { selectElement } from './lib/util'
+import config from '../webpack.config'
 
 const repositoryProps: RepositoryProps = {
   browser: chrome || browser,
@@ -62,10 +64,12 @@ const getAccountId = async (): Promise<string | null | undefined> => {
   }
 }
 
-const loadConfigList = async (): Promise<ConfigList | null> => {
-  const configList = await configRepository.get()
-  if (configList) {
-    return parseConfigList(configList)
+const loadConfig = async (): Promise<ConfigMap | null> => {
+  const config = await configRepository.get()
+  if (config) {
+    const configList = parseConfigList(config)
+    const configMap = parseConfigMap(config)
+    return Array.isArray(configList) ? {configs: configList, identityCenter: ''} : configMap
   } else {
     return null
   }
@@ -79,15 +83,23 @@ const parseConfigList = (configList: string) => {
   }
 }
 
+const parseConfigMap = (configMap: string) => {
+  try {
+    return yaml.load(configMap) as ConfigMap
+  } catch (e) {
+    return JSONC.parse(configMap) as ConfigMap
+  }
+} 
+
 const isEnvMatch = (env: Environment, accountId: string, region: string) =>
   String(env.account) === accountId && (env.region ? env.region === region : true)
 
 const findConfig = (
-  configList: ConfigList,
+  configMap: ConfigMap,
   accountId: string,
   region: string
 ): Config | undefined =>
-  configList.configs.find((config: Config) => {
+  configMap.configs.find((config: Config) => {
     if (Array.isArray(config.env)) {
       return config.env.some((e) => isEnvMatch(e, accountId, region))
     } else {
@@ -96,16 +108,16 @@ const findConfig = (
   })
 
 const getConfigIdentityCenterId = (
-  configList: ConfigList
+  configMap: ConfigMap
 ): string | undefined => {
-  return configList.identityCenter!=null ? configList.identityCenter : undefined
+  return configMap.identityCenter != null ? configMap.identityCenter : undefined
 }
 
 const run = async () => {
   const accountId = await getAccountId()
-  const configList = await loadConfigList()
-  if (configList == null || configList!.identityCenter == null) {return}
-  const identityCenterId = getConfigIdentityCenterId(configList!)
+  const configMap = await loadConfig()
+  if (configMap == null || configMap!.identityCenter == null) {return}
+  const identityCenterId = getConfigIdentityCenterId(configMap!)
   if (identityCenterId == null) {return}
   const tabUrl = window.location.href
   const encodedUrl = encodeURIComponent(tabUrl)

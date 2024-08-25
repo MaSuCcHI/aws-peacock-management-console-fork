@@ -6,6 +6,7 @@ import {
 import {
   Config,
   ConfigList,
+  ConfigMap,
   ConfigRepository,
   Environment,
 } from './lib/config-repository'
@@ -74,10 +75,12 @@ const getRegion = () => {
   return document.getElementById('awsc-mezz-region')?.getAttribute('content')
 }
 
-const loadConfigList = async (): Promise<ConfigList | null> => {
-  const configList = await configRepository.get()
-  if (configList) {
-    return parseConfigList(configList)
+const loadConfig = async (): Promise<ConfigMap | null> => {
+  const config = await configRepository.get()
+  if (config) {
+    const configList = parseConfigList(config)
+    const configMap = parseConfigMap(config)
+    return Array.isArray(configList) ? {configs: configList, identityCenter: ''} : configMap
   } else {
     return null
   }
@@ -91,15 +94,23 @@ const parseConfigList = (configList: string) => {
   }
 }
 
+const parseConfigMap = (configMap: string) => {
+  try {
+    return yaml.load(configMap) as ConfigMap
+  } catch (e) {
+    return JSONC.parse(configMap) as ConfigMap
+  }
+} 
+
 const isEnvMatch = (env: Environment, accountId: string, region: string) =>
   String(env.account) === accountId && (env.region ? env.region === region : true)
 
 const findConfig = (
-  configList: ConfigList,
+  configMap: ConfigMap,
   accountId: string,
   region: string
 ): Config | undefined =>
-  configList.configs.find((config: Config) => {
+  configMap.configs.find((config: Config) => {
     if (Array.isArray(config.env)) {
       return config.env.some((e) => isEnvMatch(e, accountId, region))
     } else {
@@ -280,11 +291,11 @@ const updateStyle = (style: Config['style']) => {
 
 const run = async () => {
   const accounts = await accountsRepository.getAccounts()
-  const configList = await loadConfigList()
+  const configMap = await loadConfig()
   const accountId = await getAccountId()
   const region = getRegion()
-  if (configList && accountId && region) {
-    const config = findConfig(configList, accountId, region)
+  if (configMap && accountId && region) {
+    const config = findConfig(configMap, accountId, region)
     if (config?.style) {
       updateStyle(config?.style)
     }
